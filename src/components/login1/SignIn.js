@@ -9,6 +9,7 @@ const SignIn = ({ onClick, onClick1, login, errorMsg }) => {
       title: !errorMsg.auth ? "error" : "success",
       text: errorMsg.msg,
       icon: !errorMsg.auth ? "error" : "success",
+      timer: 2000,
       buttons: {
         confirm: {
           text: !errorMsg.auth ? "Try Again" : "Login success",
