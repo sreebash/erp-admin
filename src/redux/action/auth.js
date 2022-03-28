@@ -8,7 +8,11 @@ import {
     AUTHENTICATED_SUCCESS,
     AUTHENTICATED_FAIL,
     LOGOUT,
-    AUTH_ERROR
+    AUTH_ERROR,
+    PASSWORD_RESET_SUCCESS,
+    PASSWORD_RESET_FAIL,
+    PASSWORD_RESET_CONFIRM_SUCCESS,
+    PASSWORD_RESET_CONFIRM_FAIL,
 } from "./type";
 import {apiUrl} from "../../../config/apiConfig";
 import {error} from "next/dist/build/output/log";
@@ -109,7 +113,7 @@ export const login = (values) => async dispatch => {
         
         dispatch({
             type: AUTH_ERROR,
-            payload:{
+            payload: {
                 msg: 'Login successfully completed',
                 auth: true
             },
@@ -133,10 +137,52 @@ export const logout = () => dispatch => {
     
     dispatch({
         type: AUTH_ERROR,
-        payload:{
+        payload: {
             msg: 'Logged Out!',
             auth: true
         },
     })
+    
+}
+
+export const reset_password = (email) => async dispatch =>{
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    const body = JSON.stringify({email});
+    try {
+        await axios.post(`${apiUrl}auth/users/reset_password/`, body, config)
+        dispatch({
+            type: PASSWORD_RESET_SUCCESS
+        })
+    } catch (err) {
+        dispatch({
+            type: PASSWORD_RESET_FAIL
+        });
+    }
+};
+
+export const reset_password_confirm = (uid, token, new_password, re_new_password) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    
+    const body = JSON.stringify({uid, token, new_password, re_new_password});
+    
+    try {
+        await axios.post(`${apiUrl}auth/users/reset_password_confirm/`, body, config)
+        dispatch({
+            type: PASSWORD_RESET_CONFIRM_SUCCESS
+        })
+    } catch (err) {
+        dispatch({
+            type: PASSWORD_RESET_CONFIRM_FAIL
+        });
+    }
+    
     
 }
