@@ -1,16 +1,23 @@
 import Router from "next/router";
 import React, {useEffect, useState} from "react";
-import {connect} from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import ForgetPassword from "../src/components/login1/ForgetPassword";
 import SignIn from "../src/components/login1/SignIn";
 import SignUp from "../src/components/login1/SignUp";
-import {login} from "../src/redux/action/auth";
+import {login, logout, set_authenticate} from "../src/redux/action/auth";
+import axios from "axios";
+import {apiUrl} from "../config/apiConfig";
+import {LOGOUT} from "../src/redux/action/type";
+import {route} from "next/dist/next-server/server/router";
+
 
 const Login = ({login, isAuthenticated}) => {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
+    
+    const dispatch = useDispatch()
     const {email, password} = formData;
     
     const [active, setActive] = useState(2);
@@ -26,6 +33,26 @@ const Login = ({login, isAuthenticated}) => {
     if (isAuthenticated) {
         Router.push('/')
     }
+    
+    useEffect(() => {
+        if (localStorage.getItem('access')) {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            };
+            const body = JSON.stringify({token: localStorage.getItem('access')});
+            axios.post(`${apiUrl}auth/jwt/verify/`, body, config).then((response) => {
+                console.log("response", response);
+                if (response) {
+                    Router.push('/')
+                } else {
+                    dispatch(logout)
+                }
+            })
+        }
+    });
     
     return (
         <div className="authincation d-flex flex-column flex-lg-row flex-column-fluid">
