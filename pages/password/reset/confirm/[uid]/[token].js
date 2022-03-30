@@ -25,7 +25,6 @@ const ResetPasswordConfirm = ({reset_password_confirm}) => {
     const onSubmit = e => {
         e.preventDefault();
         const uid = router.query.uid;
-        console.log('===UID===', uid)
         const token = router.query.token;
         reset_password_confirm(uid, token, new_password, re_new_password);
         setRequestSent(true);

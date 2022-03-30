@@ -16,6 +16,7 @@ import {
 } from "./type";
 import {apiUrl} from "../../../config/apiConfig";
 import {error} from "next/dist/build/output/log";
+import {route} from "next/dist/next-server/server/router";
 
 export const checkAuthenticated = () => async dispatch => {
     if (localStorage.getItem('access')) {
@@ -73,6 +74,7 @@ export const load_user = () => async dispatch => {
                 type: USER_LOADED_SUCCESS,
                 payload: res.data
             });
+            localStorage.setItem('users', JSON.stringify(res.data))
         } catch (error) {
             dispatch({
                 type: USER_LOADED_FAIL,
@@ -119,6 +121,8 @@ export const login = (values) => async dispatch => {
             },
         })
         dispatch(load_user())
+        
+        
     } catch (error) {
         dispatch({
             type: LOGIN_FAIL,
@@ -130,10 +134,10 @@ export const logout = () => dispatch => {
     console.log("Logout")
     dispatch({
         type: LOGOUT,
-        // payload: {
-        //     auth: false,
-        // }
     });
+    
+    localStorage.removeItem('users')
+    
     
     dispatch({
         type: AUTH_ERROR,
@@ -145,7 +149,7 @@ export const logout = () => dispatch => {
     
 }
 
-export const reset_password = (email) => async dispatch =>{
+export const reset_password = (email) => async dispatch => {
     const config = {
         headers: {
             'Content-Type': 'application/json'
