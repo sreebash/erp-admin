@@ -1,13 +1,15 @@
-import Router from "next/router";
+import Router, {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
 import {connect, useDispatch} from "react-redux";
-import {reset_password_confirm} from "../src/redux/action/auth";
+import {logout, reset_password_confirm} from "../../../../../src/redux/action/auth";
+import axios from "axios";
+import {apiUrl} from "../../../../../config/apiConfig";
 
 
-
-const ResetPasswordConfirm = ({match, reset_password_confirm}) => {
+const ResetPasswordConfirm = ({reset_password_confirm}) => {
     const [requestSent, setRequestSent] = useState(false);
-    console.log(match)
+    const router = useRouter();
+    console.log(router);
     const [formData, setFormData] = useState({
         new_password: '',
         re_new_password: '',
@@ -22,17 +24,26 @@ const ResetPasswordConfirm = ({match, reset_password_confirm}) => {
     
     const onSubmit = e => {
         e.preventDefault();
-        console.log(match)
-        const uid = match.params.uid;
-        const token = match.params.token;
+        const uid = router.query.uid;
+        console.log('===UID===', uid)
+        const token = router.query.token;
         reset_password_confirm(uid, token, new_password, re_new_password);
         setRequestSent(true);
     };
     
     
     if (requestSent) {
-        Router.push('/')
+        router.push('/')
     }
+    
+    
+    // useEffect(() => {
+    //     const uid = router.query.uid;
+    //     const token = router.query.token;
+    //     if (uid && token !== true) {
+    //         router.push('/login')
+    //     }
+    // })
     
     
     return (
@@ -57,7 +68,7 @@ const ResetPasswordConfirm = ({match, reset_password_confirm}) => {
                 className="container flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
                 <div className="d-flex justify-content-center h-100 align-items-center">
                     <div className="authincation-content style-2">
-                        <h1> Request Password Reset:</h1>
+                        <h1> Confirm Password Reset:</h1>
                         <form onSubmit={e => onSubmit(e)}>
                             <div className="form-group">
                                 <input type="password" className="form-control" placeholder="New Password"
