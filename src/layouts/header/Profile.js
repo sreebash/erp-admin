@@ -40,7 +40,7 @@ const Profile = ({logout, users}) => {
                 alignRight={true}
                 className="dropdown-menu dropdown-menu-right mt-4"
             >
-                <Link href="/apps/profile">
+                <Link href="/user/profile">
                     <a className="dropdown-item ai-icon">
                         <svg
                             id="icon-user1"
