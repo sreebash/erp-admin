@@ -10,12 +10,6 @@ const SignIn = ({ onClick, onClick1, login, errorMsg }) => {
       text: errorMsg.msg,
       icon: !errorMsg.auth ? "error" : "success",
       timer: 2000,
-      buttons: {
-        confirm: {
-          text: !errorMsg.auth ? "Try Again" : "Login success",
-          closeModal: true,
-        },
-      },
     }).then();
   };
   return (

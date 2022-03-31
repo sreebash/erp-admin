@@ -1,91 +1,52 @@
-import { Formik } from "formik";
-import { useState } from "react";
-import { auth } from "../../firebaseConfig";
-import { forgetPasswordSchema } from "./Schema";
-const ForgetPassword = () => {
-  const [error, setError] = useState("");
-  return (
-    <div
-      id="forgot-password"
-      className="auth-form tab-pane fade show active form-validation"
-    >
-      {error && (
-        <div class={`alert alert-${error.error ? "danger" : "success"}`}>
-          {error.msg}
-        </div>
-      )}
-      <Formik
-        initialValues={{ email: "" }}
-        validationSchema={forgetPasswordSchema}
-        onSubmit={(values, { setSubmitting }) => {
-          auth
-            .sendPasswordResetEmail(values.email)
-            .then(() => {
-              setError({
-                msg: "Sent forget password link check your mail .",
-                error: false,
-              });
-            })
-            .catch((error) => {
-              setError({ msg: error.message, error: true });
-            });
-        }}
-      >
-        {({
-          values,
-          errors,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-        }) => (
-          <form
-            id="dz_login_signup_form"
-            className="form-validate"
-            onSubmit={handleSubmit}
-          >
-            <h3 className="text-center mb-4 text-black">Forgot Password</h3>
-            <div className="form-group">
-              <label className="mb-1 " htmlFor="val-email">
-                <strong>Enter Email</strong>
-              </label>
-              <div>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="val-email"
-                  name="email"
-                  placeholder="hello@example.com"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.email}
-                />
-                <div
-                  id="val-username1-error"
-                  className="invalid-feedback animated fadeInUp"
-                  style={{ display: "block" }}
-                >
-                  {errors.email && errors.email}
+import Router from "next/router";
+import React, {useEffect, useState} from "react";
+import {connect, useDispatch} from "react-redux";
+import {reset_password} from '../../../src/redux/action/auth';
+
+
+const ForgotPassword = ({reset_password}) => {
+    const [requestSent, setRequestSent] = useState(false);
+    const [formData, setFormData] = useState({
+        email: '',
+    });
+    
+    const dispatch = useDispatch()
+    const {email} = formData;
+    
+    const [active, setActive] = useState(2);
+    
+    const onChange = e => setFormData({...formData, [e.target.name]: e.target.value})
+    
+    const onSubmit = e => {
+        e.preventDefault();
+        reset_password(email);
+        setRequestSent(true)
+    };
+    
+    
+    if (requestSent) {
+        Router.push('/')
+    }
+    
+    
+    return (<div
+            className="container flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
+            <div className="d-flex justify-content-center h-100 align-items-center">
+                <div className="authincation-content style-2">
+                    <h1> Request Password Reset:</h1><br/>
+                    <strong>Email</strong>
+                    <form onSubmit={e => onSubmit(e)}>
+                        <div className="form-group">
+                            <input type="email" className="form-control" placeholder="Email" name="email" required
+                                   onChange={onChange}/>
+                        </div>
+                        <button className="btn btn-primary" type="submit">Reset Password</button>
+                    
+                    </form>
                 </div>
-              </div>
             </div>
-            <div
-              className="form-group text-center mt-4"
-              disabled={isSubmitting}
-            >
-              <button
-                type="submit"
-                className="btn btn-primary btn-block"
-                id="dz-signup-submit"
-              >
-                SUBMIT
-              </button>
-            </div>
-          </form>
-        )}
-      </Formik>{" "}
-    </div>
-  );
+        </div>);
 };
 
-export default ForgetPassword;
+
+export default connect(null, {reset_password})(ForgotPassword);
