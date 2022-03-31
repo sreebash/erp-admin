@@ -67,20 +67,20 @@ const ResetPasswordConfirm = ({reset_password_confirm}) => {
                 className="container flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
                 <div className="d-flex justify-content-center h-100 align-items-center">
                     <div className="authincation-content style-2">
-                        <h1> Confirm Password Reset:</h1>
+                        <h1> Confirm Password Reset:</h1><br/>
                         <form onSubmit={e => onSubmit(e)}>
                             <div className="form-group">
                                 <input type="password" className="form-control" placeholder="New Password"
-                                       value="new_password" name="new_password" minLength='6'
-                                       required onChange={onChange}/>
+                                       value={new_password} name="new_password" minLength='6'
+                                       required onChange={e => onChange(e)}/>
                             </div>
                             
                             <div className="form-group">
                                 <input type="password" className="form-control" placeholder="Confirm New Password"
-                                       value="re_new_password" name="re_new_password" minLength='6'
-                                       required onChange={onChange}/>
+                                       value={re_new_password} name="re_new_password" minLength='6'
+                                       required onChange={e => onChange(e)}/>
                             </div>
-                            <button className="btn btn-primary" type="submit">Reset Password Confirm</button>
+                            <button className="btn btn-primary" type="submit">Reset Password</button>
                         </form>
                     
                     </div>
