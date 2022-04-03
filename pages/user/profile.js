@@ -6,9 +6,10 @@ import {apiUrl} from "../../config/apiConfig";
 import ProtectedRoute from "../ProtectedRoute";
 
 import {Formik, useFormik} from "formik";
+import {updateProfile} from "../../src/redux/action/auth";
 
 
-const Profile = ({pageTitle}) => {
+const Profile = ({pageTitle, updateProfile}) => {
     
     const formik = useFormik({
         
@@ -73,7 +74,7 @@ const Profile = ({pageTitle}) => {
                         
                         
                         {userProfileInfo && userProfileInfo.length > 0 && userProfileInfo.map((profile_info, i) => (
-                            <div>
+                            <div key={i}>
                                 <Formik
                                     initialValues={{
                                         username: profile_info.username ? profile_info.username : '',
@@ -115,7 +116,7 @@ const Profile = ({pageTitle}) => {
                                         if (!values.zipcode) {
                                             errors.zipcode = "Zipcode is required"
                                         }
-    
+                                        
                                         if (!values.country) {
                                             errors.country = "Country is required"
                                         }
@@ -124,70 +125,9 @@ const Profile = ({pageTitle}) => {
                                         return errors;
                                     }}
                                     onSubmit={(values, {setSubmitting}) => {
+                                        console.log("onSubmit")
+                                        updateProfile(values, id);
                                         
-                                        let totalQty = 0;
-                                        cartItems && cartItems.length > 0 &&
-                                        cartItems.map((item) => {
-                                            totalQty = totalQty + item.qty;
-                                        });
-                                        // console.log('totalQty', totalQty);
-                                        // console.log('values', values);
-                                        // return false;
-                                        setTimeout(() => {
-                                            setSubmitting(true);
-                                            let bodyFormData = new FormData();
-                                            bodyFormData.append('username', values.username);
-                                            bodyFormData.append('first_name', values.first_name);
-                                            bodyFormData.append('last_name', values.last_name);
-                                            bodyFormData.append('company_name', values.company_name);
-                                            bodyFormData.append('address', values.address);
-                                            bodyFormData.append('street', values.street);
-                                            bodyFormData.append('city', values.city);
-                                            bodyFormData.append('zipcode', zipcode);
-                                            bodyFormData.append('country', country);
-                                            {
-                                                promoCodeApplied &&
-                                                bodyFormData.append('coupon_id', coupon && coupon.id ? coupon.id : null);
-                                            }
-                                            {
-                                                promoCodeApplied &&
-                                                bodyFormData.append('coupon_discount', promoAmount);
-                                            }
-                                            // console.log('values', values);
-                                            // return false;
-                                            axios({
-                                                method: 'post',
-                                                url: apiUrl + 'apis/checkoutProcess',
-                                                data: bodyFormData,
-                                                headers: {
-                                                    'Content-Type': 'multipart/form-data',
-                                                    'Authorization': 'Bearer ' + localStorage.getItem('access_token')
-                                                },
-                                            })
-                                                .then(function (response) {
-                                                    // console.log(response);
-                                                    if (response && response.data && response.data.status) {
-                                                        if (response.data.type == "cod" && response.data.orderInfo) {
-                                                            alert.success(response.data.message);
-                                                            localStorage.setItem('orderInfo', JSON.stringify(response.data.orderInfo));
-                                                            router.push("order-confirmation");
-                                                        } else if (response.data.type == "postpay" && response.data.postpay && response.data.postpay.redirect_url) {
-                                                            alert.success("Order Placed Successfully. Redirecting to Pospay Payment Page");
-                                                            window.location.assign(response.data.postpay.redirect_url);
-                                                        } else {
-                                                            alert.error("Something went wrong! 2");
-                                                        }
-                                                    } else {
-                                                        alert.error("Something went wrong! 3");
-                                                    }
-                                                    setSubmitting(false);
-                                                })
-                                                .catch(function (error) {
-                                                    // console.log(error.response);
-                                                    alert.error("Something went wrong! 4");
-                                                    setSubmitting(false);
-                                                });
-                                        }, 100);
                                     }}>
                                     {({
                                           values,
@@ -229,7 +169,7 @@ const Profile = ({pageTitle}) => {
                                                             <div className="row mb-2">
                                                                 <div className="col-sm-3 col-5">
                                                                     <h5 className="f-w-500">
-                                                                        <strong>First Name </strong> <span
+                                                                        First Name <span
                                                                         className="pull-right">:</span>
                                                                     </h5>
                                                                 </div>
@@ -251,7 +191,7 @@ const Profile = ({pageTitle}) => {
                                                             <div className="row mb-2">
                                                                 <div className="col-sm-3 col-5">
                                                                     <h5 className="f-w-500">
-                                                                        <strong>Last Name </strong> <span
+                                                                        Last Name <span
                                                                         className="pull-right">:</span>
                                                                     </h5>
                                                                 </div>
@@ -273,7 +213,7 @@ const Profile = ({pageTitle}) => {
                                                             <div className="row mb-2">
                                                                 <div className="col-sm-3 col-5">
                                                                     <h5 className="f-w-500">
-                                                                        <strong>Company Name </strong> <span
+                                                                        Company Name <span
                                                                         className="pull-right">:</span>
                                                                     </h5>
                                                                 </div>
@@ -296,15 +236,15 @@ const Profile = ({pageTitle}) => {
                                                             <div className="row mb-2">
                                                                 <div className="col-sm-3 col-5">
                                                                     <h5 className="f-w-500">
-                                                                        <strong>Address </strong> <span
+                                                                        Address <span
                                                                         className="pull-right">:</span>
                                                                     </h5>
                                                                 </div>
                                                                 <div className="col-sm-9 col-7">
                                                                     <textarea type="text" id='address' name='address'
-                                                                           onChange={handleChange}
-                                                                           value={values.address}
-                                                                           className='form-control'/>
+                                                                              onChange={handleChange}
+                                                                              value={values.address}
+                                                                              className='form-control'/>
                                                                 </div>
                                                                 
                                                                 {errors.address && touched.address &&
@@ -317,7 +257,7 @@ const Profile = ({pageTitle}) => {
                                                             <div className="row mb-2">
                                                                 <div className="col-sm-3 col-5">
                                                                     <h5 className="f-w-500">
-                                                                        <strong>Street </strong> <span
+                                                                        Street <span
                                                                         className="pull-right">:</span>
                                                                     </h5>
                                                                 </div>
@@ -337,7 +277,7 @@ const Profile = ({pageTitle}) => {
                                                             <div className="row mb-2">
                                                                 <div className="col-sm-3 col-5">
                                                                     <h5 className="f-w-500">
-                                                                        <strong>City </strong> <span
+                                                                        City <span
                                                                         className="pull-right">:</span>
                                                                     </h5>
                                                                 </div>
@@ -357,7 +297,7 @@ const Profile = ({pageTitle}) => {
                                                             <div className="row mb-2">
                                                                 <div className="col-sm-3 col-5">
                                                                     <h5 className="f-w-500">
-                                                                        <strong>Zipcode </strong> <span
+                                                                        Zipcode <span
                                                                         className="pull-right">:</span>
                                                                     </h5>
                                                                 </div>
@@ -378,12 +318,13 @@ const Profile = ({pageTitle}) => {
                                                             <div className="row mb-2">
                                                                 <div className="col-sm-3 col-5">
                                                                     <h5 className="f-w-500">
-                                                                        <strong>Country </strong> <span
+                                                                        Country <span
                                                                         className="pull-right">:</span>
                                                                     </h5>
                                                                 </div>
                                                                 <div className="col-sm-9 col-7">
-                                                                    <input type="text" id='loccountryation' name='country'
+                                                                    <input type="text" id='loccountryation'
+                                                                           name='country'
                                                                            onChange={handleChange}
                                                                            value={values.country}
                                                                            className='form-control'/>
@@ -403,9 +344,18 @@ const Profile = ({pageTitle}) => {
                                                     </div>
                                                 </div>
                                             </div>
+                                            <button
+                                                type="submit"
+                                                className="btn btn-info btn-block"
+                                                id="dz-signup-submit"
+                                            >
+                                                Update Profile
+                                            </button>
                                         </form>
+                                    
                                     )}
                                 </Formik>
+                                
                             
                             </div>
                         ))}
@@ -418,4 +368,4 @@ const Profile = ({pageTitle}) => {
     );
 };
 
-export default connect(null, {pageTitle})(Profile);
+export default connect(null, {pageTitle, updateProfile})(Profile);

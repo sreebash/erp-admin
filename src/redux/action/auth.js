@@ -190,3 +190,40 @@ export const reset_password_confirm = (uid, token, new_password, re_new_password
     
     
 }
+
+
+export const updateProfile = (values, id) => async dispatch => {
+    console.log("values", values)
+    console.log("id", id)
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    const body = JSON.stringify(values, id);
+    
+    try {
+        const res = await axios.post(`${apiUrl}userprofile/${id}/`, body, config)
+        console.log(res)
+        
+        dispatch({
+            type: USER_LOADED_SUCCESS,
+            payload: res.data
+        });
+        localStorage.setItem('users', JSON.stringify(res.data))
+        
+        dispatch({
+            type: AUTH_ERROR,
+            payload: {
+                msg: 'Profile successfully updated',
+                auth: true
+            },
+        })
+        
+        
+    } catch (error) {
+        dispatch({
+            type: LOGIN_FAIL,
+        });
+    }
+};
