@@ -18,6 +18,9 @@ const Profile = ({pageTitle, updateProfile, user}) => {
             first_name: '',
             last_name: '',
             company_name: '',
+            address: '',
+            street: '',
+            city: '',
             zipcode: '',
             country: '',
             
