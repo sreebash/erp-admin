@@ -5,7 +5,7 @@ import Layout from "../src/layouts/Layout";
 import axios from "axios";
 import {apiUrl} from "../config/apiConfig";
 import {AUTHENTICATED_FAIL, AUTHENTICATED_SUCCESS} from "../src/redux/action/type";
-import {set_authenticate} from "../src/redux/action/auth";
+import {load_user, set_authenticate} from "../src/redux/action/auth";
 
 const ProtectedRoute = ({isAuthenticated, children}) => {
     const router = useRouter();
@@ -28,7 +28,8 @@ const ProtectedRoute = ({isAuthenticated, children}) => {
                     axios.post(`${apiUrl}auth/jwt/verify/`, body, config).then((response) => {
                         console.log("response", response);
                         if(response) {
-                        dispatch(set_authenticate());
+                            dispatch(set_authenticate());
+                            dispatch(load_user());
                         } else {
                             router.push('/login');
                         }

@@ -90,6 +90,7 @@ export const load_user = () => async dispatch => {
 };
 
 export const set_authenticate = () => async dispatch => {
+    console.log("set_authenticate")
     dispatch({
         type: AUTHENTICATED_SUCCESS,
     });
@@ -196,30 +197,38 @@ export const updateProfile = (values, id) => async dispatch => {
     console.log("values", values)
     console.log("id", id)
     const config = {
+        method: 'patch',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('access')}`,
+            'Accept': 'application/json',
         }
     };
     const body = JSON.stringify(values, id);
     
     try {
-        const res = await axios.post(`${apiUrl}userprofile/${id}/`, body, config)
-        console.log(res)
-        
-        dispatch({
-            type: USER_LOADED_SUCCESS,
-            payload: res.data
-        });
-        localStorage.setItem('users', JSON.stringify(res.data))
-        
-        dispatch({
-            type: AUTH_ERROR,
-            payload: {
-                msg: 'Profile successfully updated',
-                auth: true
-            },
-        })
-        
+
+        axios.patch(`${apiUrl}userprofile/${id}/`, body, config)
+            .then((response) => {
+ 
+                    console.log('userProfileInfo: ', response)
+                dispatch({
+                    type: USER_LOADED_SUCCESS,
+                    payload: response.data
+                });
+                localStorage.setItem('users', JSON.stringify(response.data))
+    
+                dispatch({
+                    type: AUTH_ERROR,
+                    payload: {
+                        msg: 'Profile successfully updated',
+                        auth: true
+                    },
+                })
+            })
+            .catch((error) => {
+                console.log(error)
+            })
         
     } catch (error) {
         dispatch({

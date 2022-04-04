@@ -9,8 +9,8 @@ import {Formik, useFormik} from "formik";
 import {updateProfile} from "../../src/redux/action/auth";
 
 
-const Profile = ({pageTitle, updateProfile}) => {
-    
+const Profile = ({pageTitle, updateProfile, user}) => {
+    console.log("user", user);
     const formik = useFormik({
         
         initialValues: {
@@ -126,7 +126,7 @@ const Profile = ({pageTitle, updateProfile}) => {
                                     }}
                                     onSubmit={(values, {setSubmitting}) => {
                                         console.log("onSubmit")
-                                        updateProfile(values, id);
+                                        updateProfile(values, user.id);
                                         
                                     }}>
                                     {({
@@ -355,7 +355,7 @@ const Profile = ({pageTitle, updateProfile}) => {
                                     
                                     )}
                                 </Formik>
-                                
+                            
                             
                             </div>
                         ))}
@@ -368,4 +368,10 @@ const Profile = ({pageTitle, updateProfile}) => {
     );
 };
 
-export default connect(null, {pageTitle, updateProfile})(Profile);
+
+const mapStateToProps = (state) => ({
+    user: state.auth.user,
+    
+});
+
+export default connect(mapStateToProps, {pageTitle, updateProfile})(Profile);
