@@ -7,9 +7,17 @@ import ProtectedRoute from "../ProtectedRoute";
 
 import {Formik, useFormik} from "formik";
 import {updateProfile} from "../../src/redux/action/auth";
+import {ToastContainer, toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Profile = ({pageTitle, updateProfile, user}) => {
+    
+    const diffToast = () => {
+        toast('Profile Successfully Updated', {
+            position: "top-right"
+        });
+    }
     console.log("user", user);
     const formik = useFormik({
         
@@ -67,6 +75,9 @@ const Profile = ({pageTitle, updateProfile, user}) => {
     
     return (
         <ProtectedRoute>
+            <ToastContainer/>
+            {/*{Toast('Profile successfully updated!', 'success')}*/}
+    
             <div className="card">
                 <div className="card-body">
                     <div className="profile-personal-info">
@@ -74,8 +85,8 @@ const Profile = ({pageTitle, updateProfile, user}) => {
                         <h4 className="text-primary mb-4">
                             Personal Information
                         </h4>
-                        
-                        
+    
+    
                         {userProfileInfo && userProfileInfo.length > 0 && userProfileInfo.map((profile_info, i) => (
                             <div key={i}>
                                 <Formik
@@ -351,6 +362,7 @@ const Profile = ({pageTitle, updateProfile, user}) => {
                                                 type="submit"
                                                 className="btn btn-info btn-block"
                                                 id="dz-signup-submit"
+                                                onClick={diffToast}
                                             >
                                                 Update Profile
                                             </button>
