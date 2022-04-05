@@ -76,8 +76,7 @@ const Profile = ({pageTitle, updateProfile, user}) => {
     return (
         <ProtectedRoute>
             <ToastContainer/>
-            {/*{Toast('Profile successfully updated!', 'success')}*/}
-    
+            
             <div className="card">
                 <div className="card-body">
                     <div className="profile-personal-info">
@@ -85,8 +84,8 @@ const Profile = ({pageTitle, updateProfile, user}) => {
                         <h4 className="text-primary mb-4">
                             Personal Information
                         </h4>
-    
-    
+                        
+                        
                         {userProfileInfo && userProfileInfo.length > 0 && userProfileInfo.map((profile_info, i) => (
                             <div key={i}>
                                 <Formik

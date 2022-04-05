@@ -9,7 +9,7 @@ export const LOGOUT = 'LOGOUT';
 
 export const AUTH_ERROR = "AUTH_ERROR";
 
-export const USER_UPDATE_REQUEST = "USER_UPDATE_REQUEST";
+export const CATEGORY_LIST = "CATEGORY_LIST";
 export const USER_UPDATE_SUCCESS = "USER_UPDATE_SUCCESS";
 export const USER_UPDATE_FAIL = "USER_UPDATE_FAIL";
 

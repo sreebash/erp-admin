@@ -7,7 +7,6 @@ import tableReducer from "./tableReducer";
 import themeReducer from "./themeReducer";
 import utilsReducer from "./utilsReducer";
 import widgetReducer from "./widgetReducer";
-import updateUserProfile from "./updateProfileReducer";
 
 export default combineReducers({
   utils: utilsReducer,
@@ -17,6 +16,5 @@ export default combineReducers({
   apps: appReducer,
   widget: widgetReducer,
   auth: authReducer,
-  profile: updateUserProfile,
   table: tableReducer,
 });
